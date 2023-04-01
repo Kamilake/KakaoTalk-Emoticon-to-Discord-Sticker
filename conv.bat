@@ -82,7 +82,7 @@ if errorlevel 1 (
       exit
     )
     echo ImageMagick 설치가 완료되었습니다.
-  ) else (ㅛ
+  ) else (
     echo ImageMagick이 설치되어 있지 않습니다.
     echo https://imagemagick.org/script/download.php 에서 ImageMagick을 설치해주세요.
     pause

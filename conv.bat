@@ -7,6 +7,13 @@ set FINAL_DELAY=0.0
 @REM FPS=대부분 10인데 특수한 경우에는 12fps
 set FPS=10
 
+choco --version > nul 2>&1
+if errorlevel 0 (
+  echo Chocolatey가 설치되어 있음을 확인하였습니다.
+  echo 의존성 미설치를 확인하였을 때 자동 설치를 시도합니다.
+  echo.
+)
+
 if not exist "pngquant.exe" (
   echo pngquant가 설치되어 있지 않습니다.
   echo https://pngquant.org/ 에서 pngquant를 다운로드해 시스템에 설치하거나 %0 파일과 나란히 옆에 둬 주세요.

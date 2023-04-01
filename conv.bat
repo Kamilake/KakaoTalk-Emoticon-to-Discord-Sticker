@@ -7,7 +7,7 @@ set FINAL_DELAY=0.0
 @REM FPS=대부분 10인데 특수한 경우에는 12fps
 set FPS=10
 @REM CHOCO=1이면 Chocolatey를 사용하여 의존성을 자동으로 설치
-set CHOCO=0
+set IS_CHOCO=0
 @REM CHOCO=1이면 Chocolatey 설치 여부를 검사함
 set CHOCO_CHECK=1
 
@@ -25,36 +25,73 @@ if %CHOCO_CHECK% == 1 (
     ) else (
       echo 관리자 권한이 확인 되었습니다.
       echo 패키지 관리자를 사용하여 의존성을 설치합니다.
-      CHOCO = 1
+      set IS_CHOCO=1
       echo.
     )
   )
 )
 
 if not exist "pngquant.exe" (
-  echo pngquant가 설치되어 있지 않습니다.
-  echo https://pngquant.org/ 에서 pngquant를 다운로드해 시스템에 설치하거나 %0 파일과 나란히 옆에 둬 주세요.
-  pause
-  exit
+  if %IS_CHOCO% == 1 (
+    echo pngquant 설치 시도 중...
+    choco install pngquant -y > nul 2>&1
+    if errorlevel 1 (
+      echo Chocolatey를 사용한 설치에 실패했습니다.
+      echo https://pngquant.org/ 에서 pngquant를 다운로드해 시스템에 설치하거나 %0 파일과 나란히 옆에 둬 주세요.
+      pause
+      exit
+    )
+    echo pngquant 설치가 완료되었습니다.
+  ) else (
+    echo pngquant가 설치되어 있지 않습니다.
+    echo https://pngquant.org/ 에서 pngquant를 다운로드해 시스템에 설치하거나 %0 파일과 나란히 옆에 둬 주세요.
+    pause
+    exit
+  )
 )
 
 ffmpeg -version > nul 2>&1
 if errorlevel 1 (
-  echo ffmpeg가 설치되어 있지 않습니다.
-  echo https://ffmpeg.org/ 에서 ffmpeg를 설치해주세요.
-  pause
-  exit
+  if %IS_CHOCO% == 1 (
+    echo ffmpeg 설치 시도 중...
+    choco install ffmpeg -y > nul 2>&1
+    if errorlevel 1 (
+      echo Chocolatey를 사용한 설치에 실패했습니다.
+      echo https://ffmpeg.org/ 에서 ffmpeg를 설치해주세요.
+      pause
+      exit
+    )
+    echo ffmpeg 설치가 완료되었습니다.
+  ) else (
+    echo ffmpeg가 설치되어 있지 않습니다.
+    echo https://ffmpeg.org/ 에서 ffmpeg를 설치해주세요.
+    pause
+    exit
+  )
 )
 
 magick -version > nul 2>&1
 if errorlevel 1 (
-  echo ImageMagick이 설치되어 있지 않습니다.
-  echo https://imagemagick.org/script/download.php 에서 ImageMagick을 설치해주세요.
-  pause
-  exit
+  if %IS_CHOCO% == 1 (
+    echo ImageMagick 설치 시도 중...
+    choco install ImageMagick -y > nul 2>&1
+    if errorlevel 1 (
+      echo Chocolatey를 사용한 설치에 실패했습니다.
+      echo https://imagemagick.org/script/download.php 에서 ImageMagick을 설치해주세요.
+      pause
+      exit
+    )
+    echo ImageMagick 설치가 완료되었습니다.
+  ) else (ㅛ
+    echo ImageMagick이 설치되어 있지 않습니다.
+    echo https://imagemagick.org/script/download.php 에서 ImageMagick을 설치해주세요.
+    pause
+    exit
+  )
 )
 
 :INTRO
+echo .
 echo 이 스크립트는 카카오톡 이모티콘을 캡처해서 Discord 스티커에서 쓰이는 apng로 변환합니다.
 
 echo 1) 새로운 이모티콘 녹화

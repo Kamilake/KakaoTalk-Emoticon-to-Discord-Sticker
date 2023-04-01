@@ -6,12 +6,29 @@ setlocal EnableDelayedExpansion
 set FINAL_DELAY=0.0
 @REM FPS=대부분 10인데 특수한 경우에는 12fps
 set FPS=10
+@REM CHOCO=1이면 Chocolatey를 사용하여 의존성을 자동으로 설치
+set CHOCO=0
+@REM CHOCO=1이면 Chocolatey 설치 여부를 검사함
+set CHOCO_CHECK=1
 
-choco --version > nul 2>&1
-if errorlevel 0 (
-  echo Chocolatey가 설치되어 있음을 확인하였습니다.
-  echo 의존성 미설치를 확인하였을 때 자동 설치를 시도합니다.
-  echo.
+if %CHOCO_CHECK% == 1 (
+  choco --version > nul 2>&1
+  if errorlevel 0 (
+    echo Chocolatey가 설치되어 있음을 확인하였습니다.
+    echo 의존성 미설치를 확인하였을 때 자동 설치를 시도합니다.
+    echo.
+    if not "%1"=="am_admin" (
+      echo Chocolatey를 사용하기 위해 관리자 권한를 요청합니다.
+      powershell -Command "Start-Process -Verb RunAs -FilePath '%0' -ArgumentList 'am_admin'"
+      exit /b
+      echo.
+    ) else (
+      echo 관리자 권한이 확인 되었습니다.
+      echo 패키지 관리자를 사용하여 의존성을 설치합니다.
+      CHOCO = 1
+      echo.
+    )
+  )
 )
 
 if not exist "pngquant.exe" (

@@ -20,21 +20,23 @@ if %CHOCO_CHECK% == 1 (
     echo Chocolatey가 설치되어 있음을 확인하였습니다.
     echo 의존성 미설치를 확인하였을 때 자동 설치를 시도합니다.
     echo.
+  )
+)
+
+if not exist "%~dp0libs\pngquant.exe" if not exist "pngquant.exe" (
+  echo pngquant가 설치되어 있지 않습니다.
+  echo 계속하려면 엔터 키를 누르세요...
+  pause > nul
+  if %CHOCO_CHECK% == 1 (
     if not "%1"=="am_admin" (
       echo Chocolatey를 사용하기 위해 관리자 권한를 요청합니다.
       powershell -Command "Start-Process -Verb RunAs -FilePath '%0' -ArgumentList 'am_admin'"
       exit /b
-      echo.
     ) else (
       echo 관리자 권한이 확인 되었습니다.
-      echo 패키지 관리자를 사용하여 의존성을 설치합니다.
       set IS_CHOCO=1
-      echo.
     )
   )
-)
-
-if not exist "pngquant.exe" (
   if %IS_CHOCO% == 1 (
     echo pngquant 설치 시도 중...
     choco install pngquant -y > nul 2>&1
@@ -46,7 +48,6 @@ if not exist "pngquant.exe" (
     )
     echo pngquant 설치가 완료되었습니다.
   ) else (
-    echo pngquant가 설치되어 있지 않습니다.
     echo https://pngquant.org/ 에서 pngquant를 다운로드해 시스템에 설치하거나 %0 파일과 나란히 옆에 둬 주세요.
     pause
     exit
@@ -55,6 +56,19 @@ if not exist "pngquant.exe" (
 
 ffmpeg -version > nul 2>&1
 if errorlevel 1 (
+  echo ffmpeg가 설치되어 있지 않습니다.
+  echo 계속하려면 엔터 키를 누르세요...
+  pause > nul
+  if %CHOCO_CHECK% == 1 (
+    if not "%1"=="am_admin" (
+      echo Chocolatey를 사용하기 위해 관리자 권한를 요청합니다.
+      powershell -Command "Start-Process -Verb RunAs -FilePath '%0' -ArgumentList 'am_admin'"
+      exit /b
+    ) else (
+      echo 관리자 권한이 확인 되었습니다.
+      set IS_CHOCO=1
+    )
+  )
   if %IS_CHOCO% == 1 (
     echo ffmpeg 설치 시도 중...
     choco install ffmpeg -y > nul 2>&1
@@ -66,7 +80,6 @@ if errorlevel 1 (
     )
     echo ffmpeg 설치가 완료되었습니다.
   ) else (
-    echo ffmpeg가 설치되어 있지 않습니다.
     echo https://ffmpeg.org/ 에서 ffmpeg를 설치해주세요.
     pause
     exit
@@ -75,6 +88,19 @@ if errorlevel 1 (
 
 magick -version > nul 2>&1
 if errorlevel 1 (
+  echo ImageMagick이 설치되어 있지 않습니다.
+  echo 계속하려면 엔터 키를 누르세요...
+  pause > nul
+  if %CHOCO_CHECK% == 1 (
+    if not "%1"=="am_admin" (
+      echo Chocolatey를 사용하기 위해 관리자 권한를 요청합니다.
+      powershell -Command "Start-Process -Verb RunAs -FilePath '%0' -ArgumentList 'am_admin'"
+      exit /b
+    ) else (
+      echo 관리자 권한이 확인 되었습니다.
+      set IS_CHOCO=1
+    )
+  )
   if %IS_CHOCO% == 1 (
     echo ImageMagick 설치 시도 중...
     choco install ImageMagick -y > nul 2>&1
@@ -86,7 +112,6 @@ if errorlevel 1 (
     )
     echo ImageMagick 설치가 완료되었습니다.
   ) else (
-    echo ImageMagick이 설치되어 있지 않습니다.
     echo https://imagemagick.org/script/download.php 에서 ImageMagick을 설치해주세요.
     pause
     exit

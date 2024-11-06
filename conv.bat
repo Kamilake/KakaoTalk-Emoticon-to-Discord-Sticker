@@ -48,7 +48,7 @@ echo 채팅방 크기를 가장 줄여주세요.
 echo 그런 다음 녹화를 시작하고 이모티콘을 하나 보내면 됩니다.
 echo 10초간 녹화를 시작하려면 엔터를 누르세요.
 pause > nul
-ffmpeg.exe -y -f dshow -f gdigrab -draw_mouse 0 -t 00:00:10 -i title="%%TEMP" -framerate 30 -vcodec libx264 -crf 0 -preset ultrafast output.mkv
+ffmpeg.exe -y -f dshow -f gdigrab -draw_mouse 0 -t 00:00:10 -i title="%%TEMP" -framerate 30 -vcodec libx264 -crf 0 -preset ultrafast -pix_fmt rgb24 output.mkv
 if errorlevel 1 (
   echo 녹화에 실패했습니다. 다시 시도해주세요.
   goto :PRE_Record
@@ -60,7 +60,7 @@ pause
 :STEP1
 rmdir tmp1 /s /q
 mkdir tmp1
-ffmpeg -i .\output.mkv -pred mixed -vf "mpdecimate,setpts=N/FRAME_RATE/TB" -ss 00:00:00.6 ./tmp1/output%%03d.png
+ffmpeg -i .\output.mkv -pix_fmt rgb24 -pred mixed -vf "mpdecimate,setpts=N/FRAME_RATE/TB" -ss 00:00:00.6 ./tmp1/output%%03d.png
 
 rem mkdir tmp2
 rem ffmpeg -i ./tmp1/output%03d.png -pred mixed -filter_complex "[0:v]scale=iw*0.68:-1[resized];[resized]crop=250:250:105*0.68:445*0.68[cropped];[cropped]mpdecimate[decimated];[decimated]setpts=N/FRAME_RATE/TB[setpts]" -map "[setpts]" ./tmp2/output%03d.png

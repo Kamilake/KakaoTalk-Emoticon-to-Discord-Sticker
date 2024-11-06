@@ -68,7 +68,7 @@ rem ffmpeg -i ./tmp1/output%03d.png -pred mixed -filter_complex "[0:v]scale=iw*0
 :STEP2
 rmdir tmp2 /s /q
 mkdir tmp2
-ffmpeg -i ./tmp1/output%%03d.png -pred mixed -filter_complex "[0:v]scale=iw*1.00:-1[resized];[resized]crop=240:240:420:361[cropped];[cropped]mpdecimate[decimated];[decimated]setpts=N/FRAME_RATE/TB[setpts]" -map "[setpts]" ./tmp2/output%%03d.png
+ffmpeg -i ./tmp1/output%%03d.png -pred mixed -filter_complex "[0:v]scale=iw*1.00:-1[resized];[resized]crop=240:240:477:385[cropped];[cropped]mpdecimate[decimated];[decimated]setpts=N/FRAME_RATE/TB[setpts]" -map "[setpts]" ./tmp2/output%%03d.png
 echo 이미지를 프래임으로 잘랐습니다.
 echo 이제 반복 구간을 찾아야 하는데, 자동으로 반복 구간을 찾을까요? (y/n)
 set /p auto_deleter=

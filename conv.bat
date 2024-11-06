@@ -143,7 +143,7 @@ echo 7. 이제 엔터를 누르면 10초간 녹화가 시작됩니다. 녹화가
 echo .
 echo 10초간 녹화를 시작하려면 엔터를 누르세요...
 pause > nul
-ffmpeg.exe -y -f dshow -f gdigrab -draw_mouse 0 -t 00:00:10 -i title="%%TEMP" -framerate 30 -vcodec libx264 -crf 0 -preset ultrafast -pix_fmt rgb24 output.mkv
+ffmpeg.exe -y -f dshow -f gdigrab -draw_mouse 0 -t 00:00:10 -i title="%%TEMP" -framerate 60 -vcodec libx264 -crf 0 -preset ultrafast -pix_fmt rgb24 output.mkv
 if errorlevel 1 (
   echo 녹화에 실패했습니다. 다시 시도해주세요.
   goto :PRE_Record
@@ -155,16 +155,14 @@ pause
 :STEP1
 rmdir tmp1 /s /q
 mkdir tmp1
-ffmpeg -i .\output.mkv -pix_fmt rgb24 -pred mixed -vf "mpdecimate,setpts=N/FRAME_RATE/TB" -ss 00:00:00.6 ./tmp1/output%%03d.png
-
+ffmpeg -i .\output.mkv -pix_fmt rgb24 -pred mixed -vf "mpdecimate=hi=128:lo=10,setpts=N/FRAME_RATE/TB" -ss 00:00:00.6 ./tmp1/output%%03d.png
 rem mkdir tmp2
 rem ffmpeg -i ./tmp1/output%03d.png -pred mixed -filter_complex "[0:v]scale=iw*0.68:-1[resized];[resized]crop=250:250:105*0.68:445*0.68[cropped];[cropped]mpdecimate[decimated];[decimated]setpts=N/FRAME_RATE/TB[setpts]" -map "[setpts]" ./tmp2/output%03d.png
 
 :STEP2
 rmdir tmp2 /s /q
 mkdir tmp2
-ffmpeg -i ./tmp1/output%%03d.png -pred mixed -filter_complex "[0:v]scale=iw*1.00:-1[resized];[resized]crop=240:240:477:385[cropped];[cropped]mpdecimate[decimated];[decimated]setpts=N/FRAME_RATE/TB[setpts]" -map "[setpts]" ./tmp2/output%%03d.png
-
+ffmpeg -i ./tmp1/output%%03d.png -pred mixed -filter_complex "[0:v]scale=iw*1.00:-1[resized];[resized]crop=240:240:477:385[cropped];[cropped]mpdecimate=hi=128:lo=10[decimated];[decimated]setpts=N/FRAME_RATE/TB[setpts]" -map "[setpts]" ./tmp2/output%%03d.png
 @REM ffmpeg -i ./tmp1/output%%03d.png -pred mixed -filter_complex "[0:v]scale=iw*1.00:-1[resized];[resized]crop=240:240:417:366[cropped];[cropped]mpdecimate[decimated];[decimated]setpts=N/FRAME_RATE/TB[setpts]" -map "[setpts]" ./tmp2/output%%03d.png
 echo 이미지를 프래임으로 잘랐습니다.
 set /p FINAL_DELAY=5.1. 필요하다면 마지막 프레임 이후 딜레이를 설정하세요. 이모티콘의 움직임이 끝나면서 가만히 멈춰 있는 장면이 있다면, 그 시간을 입력해주세요. 모르겠다면 그냥 엔터를 눌러주세요. (기본값: 0초, 카카오톡: 0.7초 0.0이면 바로 다음 프레임을 반복):
@@ -245,12 +243,12 @@ FOR /R tmp3 %%X IN (*.png) DO (
   @REM optipng !qualitymax! -o ./tmp3/output!i!.png "%%X"
   @REM .\optipng.exe -o7 output12.png -out aa.png
   )
-ffmpeg -framerate %FPS% -start_number 1 -pix_fmt rgba -c:v png -i ./tmp4/output%%d.png -c:v apng -plays 0 -vf "format=rgba,mpdecimate,setpts=N/FRAME_RATE/TB,format=rgba" -final_delay %FINAL_DELAY% -compression_level 9 -f apng -pix_fmt rgba output.png -y
+ffmpeg -framerate %FPS% -start_number 1 -pix_fmt rgba -c:v png -i ./tmp4/output%%d.png -c:v apng -plays 0 -vf "format=rgba,mpdecimate=hi=128:lo=10,setpts=N/FRAME_RATE/TB,format=rgba" -final_delay %FINAL_DELAY% -compression_level 9 -f apng -pix_fmt rgba output.png -y
 goto :STEP4_END
 :STEP4_METHOD1_END
 
 :STEP4_METHOD2
-ffmpeg -framerate %FPS% -start_number 1 -pix_fmt rgba -i ./tmp4/output%%d.png -plays 0 -vf "format=rgba,mpdecimate,setpts=N/FRAME_RATE/TB,chromakey=color=0x383c44:blend=0.002:similarity=0.01,format=rgba" -final_delay %FINAL_DELAY% -compression_level 9 -f apng -pix_fmt rgba output.png -y
+ffmpeg -framerate %FPS% -start_number 1 -pix_fmt rgba -i ./tmp4/output%%d.png -plays 0 -vf "format=rgba,mpdecimate=hi=128:lo=10,setpts=N/FRAME_RATE/TB,chromakey=color=0x383c44:blend=0.002:similarity=0.01,format=rgba" -final_delay %FINAL_DELAY% -compression_level 9 -f apng -pix_fmt rgba output.png -y
 goto :STEP4_END
 :STEP4_METHOD2_END
 

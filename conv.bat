@@ -11,6 +11,9 @@ set IS_CHOCO=0
 @REM CHOCO=1이면 Chocolatey 설치 여부를 검사함
 set CHOCO_CHECK=1
 
+@REM ./libs 폴더를 PATH에 추가
+set PATH=%PATH%;%~dp0libs
+
 if %CHOCO_CHECK% == 1 (
   choco --version > nul 2>&1
   if errorlevel 0 (
